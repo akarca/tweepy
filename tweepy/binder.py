@@ -129,6 +129,8 @@ def bind_api(**config):
             # Build the request URL
             url = self.api_root + self.path
             full_url = 'https://' + self.host + url
+            if "https://" in self.path:
+                full_url = self.path
 
             # Query the cache if one is available
             # and this request uses a GET method.
@@ -181,6 +183,9 @@ def bind_api(**config):
 
                 # Execute request
                 try:
+                    if self.session.headers["Host"] not in full_url:
+                        self.session.headers["Host"] = full_url.replace("https://", "").split("/")[0]
+
                     resp = self.session.request(self.method,
                                                 full_url,
                                                 data=self.post_data,
@@ -188,6 +193,8 @@ def bind_api(**config):
                                                 timeout=self.api.timeout,
                                                 auth=auth,
                                                 proxies=self.api.proxy)
+                    if resp.ok and "image" in resp.headers["content-type"]:
+                        return resp
                 except Exception as e:
                     six.reraise(TweepError, TweepError('Failed to send request: %s' % e), sys.exc_info()[2])
 

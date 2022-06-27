@@ -422,6 +422,18 @@ class API(object):
             require_auth=True
         )
 
+    def get_direct_message_image(self, url):
+        """ :reference: https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/message-attachments/guides/retrieving-media
+            :allowed_param: 'id'
+        """
+        return bind_api(
+            api=self,
+            path=url,  # 'https://ton.twitter.com/1.1/ton/data/dm/1540242842144104452/1540242823357890561/PI7MWFzN.jpg',
+            payload_type='direct_message',
+            allowed_param=['id'],
+            require_auth=True
+        )()
+
     @property
     def list_direct_messages(self):
         """ :reference: https://developer.twitter.com/en/docs/direct-messages/sending-and-receiving/api-reference/list-events
